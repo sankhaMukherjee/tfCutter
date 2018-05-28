@@ -31,17 +31,14 @@ class {{cookiecutter.project}}():
         # ------------------------------------------------------------
         # Generate a dense network
         # ------------------------------------------------------------
-        self.nn = None
+        self.nn = self.Inp*1
         for i, (l, a) in enumerate(zip(layers, activations)):
-            if i == 0:
-                self.nn = tf.layers.dense(self.Inp, l, activation=a)
-            else:
-                self.nn = tf.layers.dense(self.nn, l, activation=a)
+            self.nn = tf.layers.dense(self.nn, l, activation=a, name='dense_{:05d}'.format(i))
 
         # ------------------------------------------------------------
         # Calculate MSE
         # ------------------------------------------------------------        
-        self.Err = tf.reduce_mean((self.n - self.Out)**2)
+        self.Err = tf.reduce_mean((self.nn - self.Out)**2)
 
         # ------------------------------------------------------------
         # Generate other misc operations
