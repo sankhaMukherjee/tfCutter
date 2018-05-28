@@ -19,14 +19,8 @@ class {{cookiecutter.project}}():
         self.restorePoints = []
         self.logPoints     = []
 
-        self.Inp  = tf.placeholder(
-                        dtype=tf.float32, 
-                        shape=inpShape )
-
-        self.Out  = tf.placeholder(
-                        dtype=tf.float32, 
-                        shape=outShape )
-
+        self.Inp  = tf.placeholder(dtype=tf.float32, shape=inpShape )
+        self.Out  = tf.placeholder(dtype=tf.float32, shape=outShape )
 
         # ------------------------------------------------------------
         # Generate a dense network
@@ -38,7 +32,7 @@ class {{cookiecutter.project}}():
         # ------------------------------------------------------------
         # Calculate MSE
         # ------------------------------------------------------------        
-        self.Err = tf.reduce_mean((self.nn - self.Out)**2)
+        self.Err = tf.reduce_mean((self.nn - self.Out)**2, name='error')
 
         # ------------------------------------------------------------
         # Generate other misc operations
@@ -69,6 +63,8 @@ class {{cookiecutter.project}}():
                 logger.error('Unable to restore the session at [{}]:{}'.format(
                     restorePoint, str(e)))
                 return False
+        else:
+            return False
 
         return True
 
@@ -105,7 +101,10 @@ class {{cookiecutter.project}}():
 
                 # Try to restore an older checkpoint
                 # ---------------------------------------
-                self.restoreModel(sess, restorePoint)
+                restored = self.restoreModel(sess, restorePoint)
+                if not restored:
+                    logger.warning('Predicting without restoring a previous setting')
+
                 yHat = sess.run(self.nn, 
                         feed_dict = { self.Inp    : X})
 
