@@ -15,7 +15,6 @@ class {{cookiecutter.project}}():
     @lD.log(logBase + '.__init__')
     def __init__(logger, self, inpShape, outShape, layers, activations):
         
-        self.nInp          = nInp
         self.restorePoints = []
         self.logPoints     = []
 
